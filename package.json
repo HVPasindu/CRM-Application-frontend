@@ -21,6 +21,7 @@
     "react-hook-form": "^7.75.0",
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.15.0",
+    "recharts": "^3.8.1",
     "styled-components": "^6.4.1",
     "sweetalert2": "^11.26.24",
     "yup": "^1.7.1"
