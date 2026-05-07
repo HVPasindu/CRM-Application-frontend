@@ -3,6 +3,11 @@ import { useState } from "react";
 
 import Login from "./pages/auth/Login";
 import Dashboard from "./pages/admin/Dashboard";
+import LeadList from "./pages/admin/leads/LeadList";
+import EditLead from "./pages/admin/leads/EditLead";
+import AddLead from "./pages/admin/leads/AddLead";
+import Notes from "./pages/admin/notes/Notes";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 import Sidebar from "./components/layout/Sidebar";
 import Topbar from "./components/layout/Topbar";
@@ -36,6 +41,50 @@ function App() {
           <ProtectedRoute>
             <AppLayout>
               <Dashboard />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/leads"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <LeadList />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/leads/create"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <AddLead />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/leads/edit/:id"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <EditLead />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/leads/:leadId/notes"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <Notes />
             </AppLayout>
           </ProtectedRoute>
         }

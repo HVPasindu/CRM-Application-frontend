@@ -2,20 +2,42 @@ import {
   Dashboard,
   PeopleAlt,
   AddCircle,
-  Notes,
   Logout,
   Menu,
 } from "@mui/icons-material";
 import { Button, IconButton } from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function Sidebar({ open, setOpen }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("crm_token");
-    localStorage.removeItem("crm_user");
-    navigate("/login");
+    Swal.fire({
+      icon: "question",
+      title: "Logout?",
+      text: "Are you sure you want to logout?",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Logout",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#00a6fb",
+      cancelButtonColor: "#6b7280",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("crm_token");
+        localStorage.removeItem("crm_user");
+
+        Swal.fire({
+          icon: "success",
+          title: "Logged Out",
+          text: "You have been logged out successfully.",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#00a6fb",
+        }).then(() => {
+          navigate("/login");
+        });
+      }
+    });
   };
 
   const menuItems = [
@@ -23,21 +45,19 @@ function Sidebar({ open, setOpen }) {
       label: "Dashboard",
       icon: <Dashboard />,
       path: "/dashboard",
+      exact: true,
     },
     {
       label: "Leads",
       icon: <PeopleAlt />,
       path: "/leads",
+      exact: true,
     },
     {
       label: "Add Lead",
       icon: <AddCircle />,
       path: "/leads/create",
-    },
-    {
-      label: "Notes",
-      icon: <Notes />,
-      path: "/notes",
+      exact: true,
     },
   ];
 
@@ -74,6 +94,7 @@ function Sidebar({ open, setOpen }) {
             <NavLink
               key={item.path}
               to={item.path}
+              end={item.exact}
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
                 `
