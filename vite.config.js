@@ -5,6 +5,7 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  base:'./',
   resolve: {
     alias: {
       "@mui/styled-engine": "@mui/styled-engine-sc",
