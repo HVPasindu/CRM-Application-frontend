@@ -1,0 +1,50 @@
+name: Deploy Frontend to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Build frontend
+        run: |
+          npm run build
+
+      - name: Create SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2_key
+          chmod 600 ~/.ssh/ec2_key
+
+      - name: Deploy build files to EC2
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/ec2_key -o StrictHostKeyChecking=no" \
+            dist/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.FRONTEND_PATH }}/
+
+      - name: Set permissions and reload nginx
+        run: |
+          ssh -i ~/.ssh/ec2_key -o StrictHostKeyChecking=no \
+            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+              sudo chown -R ubuntu:ubuntu ${{ secrets.FRONTEND_PATH }}
+              sudo chmod -R 755 ${{ secrets.FRONTEND_PATH }}
+              sudo nginx -t
+              sudo systemctl reload nginx
+          EOF
